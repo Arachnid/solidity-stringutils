@@ -1,4 +1,4 @@
-/**
+/*
  * @title String & slice utility library for Solidity contracts.
  * @author Nick Johnson <arachnid@notdot.net>
  *
@@ -58,7 +58,7 @@ library strings {
         }
     }
 
-    /**
+    /*
      * @dev Returns a slice containing the entire string.
      * @param self The string to make a slice from.
      * @return A newly allocated slice containing the entire string.
@@ -71,7 +71,7 @@ library strings {
         return slice(bytes(self).length, ptr);
     }
 
-    /**
+    /*
      * @dev Returns the length of a null-terminated bytes32 string.
      * @param self The value to find the length of.
      * @return The length of the string, from 0 to 32.
@@ -102,7 +102,7 @@ library strings {
         return 32 - ret;
     }
 
-    /**
+    /*
      * @dev Returns a slice containing the entire bytes32, interpreted as a
      *      null-termintaed utf-8 string.
      * @param self The bytes32 value to convert to a slice.
@@ -120,7 +120,7 @@ library strings {
         ret._len = len(self);
     }
 
-    /**
+    /*
      * @dev Returns a new slice containing the same data as the current slice.
      * @param self The slice to copy.
      * @return A new slice containing the same data as `self`.
@@ -129,7 +129,7 @@ library strings {
         return slice(self._len, self._ptr);
     }
 
-    /**
+    /*
      * @dev Copies a slice to a new string.
      * @param self The slice to copy.
      * @return A newly allocated string containing the slice's text.
@@ -143,7 +143,7 @@ library strings {
         return ret;
     }
 
-    /**
+    /*
      * @dev Returns the length in runes of the slice. Note that this operation
      *      takes time proportional to the length of the slice; avoid using it
      *      in loops, and call `slice.empty()` if you only need to know whether
@@ -175,7 +175,7 @@ library strings {
         return len;
     }
 
-    /**
+    /*
      * @dev Returns true if the slice is empty (has a length of 0).
      * @param self The slice to operate on.
      * @return True if the slice is empty, False otherwise.
@@ -184,7 +184,7 @@ library strings {
         return self._len == 0;
     }
 
-    /**
+    /*
      * @dev Returns a positive number if `other` comes lexicographically after
      *      `self`, a negative number if it comes before, or zero if the
      *      contents of the two slices are equal. Comparison is done per-rune,
@@ -220,7 +220,7 @@ library strings {
         return int(self._len) - int(other._len);
     }
 
-    /**
+    /*
      * @dev Returns true if the two slices contain the same text.
      * @param self The first slice to compare.
      * @param self The second slice to compare.
@@ -230,7 +230,7 @@ library strings {
         return compare(self, other) == 0;
     }
 
-    /**
+    /*
      * @dev Extracts the first rune in the slice into `rune`, advancing the
      *      slice to point to the next rune and returning `self`.
      * @param self The slice to operate on.
@@ -273,7 +273,7 @@ library strings {
         return rune;
     }
 
-    /**
+    /*
      * @dev Returns the first rune in the slice, advancing the slice to point
      *      to the next rune.
      * @param self The slice to operate on.
@@ -283,7 +283,7 @@ library strings {
         nextRune(self, ret);
     }
 
-    /**
+    /*
      * @dev Returns the number of the first codepoint in the slice.
      * @param self The slice to operate on.
      * @return The number of the first codepoint in the slice.
@@ -332,7 +332,7 @@ library strings {
         return ret;
     }
 
-    /**
+    /*
      * @dev Returns the keccak-256 hash of the slice.
      * @param self The slice to hash.
      * @return The hash of the slice.
@@ -343,7 +343,7 @@ library strings {
         }
     }
 
-    /**
+    /*
      * @dev Returns true if `self` starts with `needle`.
      * @param self The slice to operate on.
      * @param needle The slice to search for.
@@ -368,7 +368,7 @@ library strings {
         return equal;
     }
 
-    /**
+    /*
      * @dev If `self` starts with `needle`, `needle` is removed from the
      *      beginning of `self`. Otherwise, `self` is unmodified.
      * @param self The slice to operate on.
@@ -398,7 +398,7 @@ library strings {
         return self;
     }
 
-    /**
+    /*
      * @dev Returns true if the slice ends with `needle`.
      * @param self The slice to operate on.
      * @param needle The slice to search for.
@@ -425,7 +425,7 @@ library strings {
         return equal;
     }
 
-    /**
+    /*
      * @dev If `self` ends with `needle`, `needle` is removed from the
      *      end of `self`. Otherwise, `self` is unmodified.
      * @param self The slice to operate on.
@@ -533,7 +533,7 @@ library strings {
         return selfptr;
     }
 
-    /**
+    /*
      * @dev Modifies `self` to contain everything from the first occurrence of
      *      `needle` to the end of the slice. `self` is set to the empty slice
      *      if `needle` is not found.
@@ -548,7 +548,7 @@ library strings {
         return self;
     }
 
-    /**
+    /*
      * @dev Modifies `self` to contain the part of the string from the start of
      *      `self` to the end of the first occurrence of `needle`. If `needle`
      *      is not found, `self` is set to the empty slice.
@@ -562,7 +562,7 @@ library strings {
         return self;
     }
 
-    /**
+    /*
      * @dev Splits the slice, setting `self` to everything after the first
      *      occurrence of `needle`, and `token` to everything before it. If
      *      `needle` does not occur in `self`, `self` is set to the empty slice,
@@ -586,7 +586,7 @@ library strings {
         return token;
     }
 
-    /**
+    /*
      * @dev Splits the slice, setting `self` to everything after the first
      *      occurrence of `needle`, and returning everything before it. If
      *      `needle` does not occur in `self`, `self` is set to the empty slice,
@@ -599,7 +599,7 @@ library strings {
         split(self, needle, token);
     }
 
-    /**
+    /*
      * @dev Splits the slice, setting `self` to everything before the last
      *      occurrence of `needle`, and `token` to everything after it. If
      *      `needle` does not occur in `self`, `self` is set to the empty slice,
@@ -622,7 +622,7 @@ library strings {
         return token;
     }
 
-    /**
+    /*
      * @dev Splits the slice, setting `self` to everything before the last
      *      occurrence of `needle`, and returning everything after it. If
      *      `needle` does not occur in `self`, `self` is set to the empty slice,
@@ -635,7 +635,7 @@ library strings {
         rsplit(self, needle, token);
     }
 
-    /**
+    /*
      * @dev Counts the number of nonoverlapping occurrences of `needle` in `self`.
      * @param self The slice to search.
      * @param needle The text to search for in `self`.
@@ -649,7 +649,7 @@ library strings {
         }
     }
 
-    /**
+    /*
      * @dev Returns True if `self` contains `needle`.
      * @param self The slice to search.
      * @param needle The text to search for in `self`.
@@ -659,7 +659,7 @@ library strings {
         return rfindPtr(self._len, self._ptr, needle._len, needle._ptr) != self._ptr;
     }
 
-    /**
+    /*
      * @dev Returns a newly allocated string containing the concatenation of
      *      `self` and `other`.
      * @param self The first slice to concatenate.
@@ -675,7 +675,7 @@ library strings {
         return ret;
     }
 
-    /**
+    /*
      * @dev Joins an array of slices, using `self` as a delimiter, returning a
      *      newly allocated string.
      * @param self The delimiter to use.
