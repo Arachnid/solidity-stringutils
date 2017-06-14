@@ -31,7 +31,7 @@ After the above code executes, `s` is now "bar baz", and `foo` is now "foo".
 ### Splitting a string into an array
     var s = "www.google.com".toSlice();
     var delim = ".".toSlice();
-    var parts = new string[](s.count(delim));
+    var parts = new string[](s.count(delim) + 1);
     for(uint i = 0; i < parts.length; i++) {
         parts[i] = s.split(delim).toString();
     }
