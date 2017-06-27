@@ -86,15 +86,15 @@ contract StringsTest is Test {
     }
 
     function testCompare() {
-        assertEq(sign("foobie".toSlice().compare("foobie".toSlice())), 0);
-        assertEq(sign("foobie".toSlice().compare("foobie".toSlice())), 0);
+        assertEq("foobie".toSlice().compare("foobie".toSlice()), 0);
+        assertEq("foobie".toSlice().compare("foobie".toSlice()), 0);
         assertEq(sign("foobie".toSlice().compare("foobif".toSlice())), -1);
         assertEq(sign("foobie".toSlice().compare("foobid".toSlice())), 1);
         assertEq(sign("foobie".toSlice().compare("foobies".toSlice())), -1);
         assertEq(sign("foobie".toSlice().compare("foobi".toSlice())), 1);
         assertEq(sign("foobie".toSlice().compare("doobie".toSlice())), 1);
         assertEq(sign("01234567890123456789012345678901".toSlice().compare("012345678901234567890123456789012".toSlice())), -1);
-        assertEq(sign("foo.bar".toSlice().split(".".toSlice()).compare("foo".toSlice())), 0);
+        assertEq("foo.bar".toSlice().split(".".toSlice()).compare("foo".toSlice()), 0);
     }
 
     function testStartsWith() {
