@@ -185,8 +185,8 @@ library strings {
     }
 
     /*
-     * @dev Returns a positive number if `other` comes lexicographically after
-     *      `self`, a negative number if it comes before, or zero if the
+     * @dev Returns a negative number if `other` comes lexicographically after
+     *      `self`, a positive number if it comes before, or zero if the
      *      contents of the two slices are equal. Comparison is done per-rune,
      *      on unicode codepoints.
      * @param self The first slice to compare.
