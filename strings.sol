@@ -33,6 +33,9 @@
  *      `s.splitNew('.')` leaves s unmodified, and returns two values
  *      corresponding to the left and right parts of the string.
  */
+ 
+pragma solidity ^0.4.14;
+
 library strings {
     struct slice {
         uint _len;
@@ -151,11 +154,11 @@ library strings {
      * @param self The slice to operate on.
      * @return The length of the slice in runes.
      */
-    function len(slice self) internal returns (uint) {
+    function len(slice self) internal returns (uint l) {
         // Starting at ptr-31 means the LSB will be the byte we care about
         var ptr = self._ptr - 31;
         var end = ptr + self._len;
-        for (uint len = 0; ptr < end; len++) {
+        for (l = 0; ptr < end; l++) {
             uint8 b;
             assembly { b := and(mload(ptr), 0xFF) }
             if (b < 0x80) {
@@ -172,7 +175,6 @@ library strings {
                 ptr += 6;
             }
         }
-        return len;
     }
 
     /*
@@ -294,34 +296,34 @@ library strings {
         }
 
         uint word;
-        uint len;
-        uint div = 2 ** 248;
+        uint length;
+        uint divisor = 2 ** 248;
 
         // Load the rune into the MSBs of b
         assembly { word:= mload(mload(add(self, 32))) }
-        var b = word / div;
+        var b = word / divisor;
         if (b < 0x80) {
             ret = b;
-            len = 1;
+            length = 1;
         } else if(b < 0xE0) {
             ret = b & 0x1F;
-            len = 2;
+            length = 2;
         } else if(b < 0xF0) {
             ret = b & 0x0F;
-            len = 3;
+            length = 3;
         } else {
             ret = b & 0x07;
-            len = 4;
+            length = 4;
         }
 
         // Check for truncated codepoints
-        if (len > self._len) {
+        if (length > self._len) {
             return 0;
         }
 
-        for (uint i = 1; i < len; i++) {
-            div = div / 256;
-            b = (word / div) & 0xFF;
+        for (uint i = 1; i < length; i++) {
+            divisor = divisor / 256;
+            b = (word / divisor) & 0xFF;
             if (b & 0xC0 != 0x80) {
                 // Invalid UTF-8 sequence
                 return 0;
@@ -339,7 +341,7 @@ library strings {
      */
     function keccak(slice self) internal returns (bytes32 ret) {
         assembly {
-            ret := sha3(mload(add(self, 32)), mload(self))
+            ret := keccak256(mload(add(self, 32)), mload(self))
         }
     }
 
@@ -360,10 +362,10 @@ library strings {
 
         bool equal;
         assembly {
-            let len := mload(needle)
+            let length := mload(needle)
             let selfptr := mload(add(self, 0x20))
             let needleptr := mload(add(needle, 0x20))
-            equal := eq(sha3(selfptr, len), sha3(needleptr, len))
+            equal := eq(keccak256(selfptr, length), keccak256(needleptr, length))
         }
         return equal;
     }
@@ -383,10 +385,10 @@ library strings {
         bool equal = true;
         if (self._ptr != needle._ptr) {
             assembly {
-                let len := mload(needle)
+                let length := mload(needle)
                 let selfptr := mload(add(self, 0x20))
                 let needleptr := mload(add(needle, 0x20))
-                equal := eq(sha3(selfptr, len), sha3(needleptr, len))
+                equal := eq(sha3(selfptr, length), sha3(needleptr, length))
             }
         }
 
@@ -417,9 +419,9 @@ library strings {
 
         bool equal;
         assembly {
-            let len := mload(needle)
+            let length := mload(needle)
             let needleptr := mload(add(needle, 0x20))
-            equal := eq(sha3(selfptr, len), sha3(needleptr, len))
+            equal := eq(keccak256(selfptr, length), keccak256(needleptr, length))
         }
 
         return equal;
@@ -441,9 +443,9 @@ library strings {
         bool equal = true;
         if (selfptr != needle._ptr) {
             assembly {
-                let len := mload(needle)
+                let length := mload(needle)
                 let needleptr := mload(add(needle, 0x20))
-                equal := eq(sha3(selfptr, len), sha3(needleptr, len))
+                equal := eq(keccak256(selfptr, length), keccak256(needleptr, length))
             }
         }
 
@@ -641,10 +643,10 @@ library strings {
      * @param needle The text to search for in `self`.
      * @return The number of occurrences of `needle` found in `self`.
      */
-    function count(slice self, slice needle) internal returns (uint count) {
+    function count(slice self, slice needle) internal returns (uint cnt) {
         uint ptr = findPtr(self._len, self._ptr, needle._len, needle._ptr) + needle._len;
         while (ptr <= self._ptr + self._len) {
-            count++;
+            cnt++;
             ptr = findPtr(self._len - (ptr - self._ptr), ptr, needle._len, needle._ptr) + needle._len;
         }
     }
@@ -687,11 +689,11 @@ library strings {
         if (parts.length == 0)
             return "";
 
-        uint len = self._len * (parts.length - 1);
+        uint length = self._len * (parts.length - 1);
         for(uint i = 0; i < parts.length; i++)
-            len += parts[i]._len;
+            length += parts[i]._len;
 
-        var ret = new string(len);
+        var ret = new string(length);
         uint retptr;
         assembly { retptr := add(ret, 32) }
 
