@@ -66,14 +66,14 @@ contract StringsTest is Test {
     }
 
     function testNextRune() {
-        var s = "a¡ࠀ𐀡".toSlice();
+        var s = "a¡á→".toSlice();
         assertEq(s.nextRune(), "a");
-        assertEq(s, "¡ࠀ𐀡");
+        assertEq(s, "¡á→");
         assertEq(s.nextRune(), "¡");
-        assertEq(s, "ࠀ𐀡");
-        assertEq(s.nextRune(), "ࠀ");
-        assertEq(s, "𐀡");
-        assertEq(s.nextRune(), "𐀡");
+        assertEq(s, "á→");
+        assertEq(s.nextRune(), "á");
+        assertEq(s, "→");
+        assertEq(s.nextRune(), "→");
         assertEq(s, "");
         assertEq(s.nextRune(), "");
     }
@@ -81,8 +81,8 @@ contract StringsTest is Test {
     function testOrd() {
         assertEq("a".toSlice().ord(), 0x61);
         assertEq("¡".toSlice().ord(), 0xA1);
-        assertEq("ࠀ".toSlice().ord(), 0x800);
-        assertEq("𐀡".toSlice().ord(), 0x10021);
+        assertEq("á".toSlice().ord(), 0xE1);
+        assertEq("→".toSlice().ord(), 0x2192);
     }
 
     function testCompare() {
