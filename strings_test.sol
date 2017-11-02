@@ -1,3 +1,4 @@
+pragma solidity ^0.4.11;
 import 'dapple/test.sol';
 import 'strings.sol';
 
@@ -66,14 +67,14 @@ contract StringsTest is Test {
     }
 
     function testNextRune() {
-        var s = "a¡ࠀ𐀡".toSlice();
+        var s = "a¡á→".toSlice();
         assertEq(s.nextRune(), "a");
-        assertEq(s, "¡ࠀ𐀡");
+        assertEq(s, "¡á→");
         assertEq(s.nextRune(), "¡");
-        assertEq(s, "ࠀ𐀡");
-        assertEq(s.nextRune(), "ࠀ");
-        assertEq(s, "𐀡");
-        assertEq(s.nextRune(), "𐀡");
+        assertEq(s, "á→");
+        assertEq(s.nextRune(), "á");
+        assertEq(s, "→");
+        assertEq(s.nextRune(), "→");
         assertEq(s, "");
         assertEq(s.nextRune(), "");
     }
@@ -81,20 +82,20 @@ contract StringsTest is Test {
     function testOrd() {
         assertEq("a".toSlice().ord(), 0x61);
         assertEq("¡".toSlice().ord(), 0xA1);
-        assertEq("ࠀ".toSlice().ord(), 0x800);
-        assertEq("𐀡".toSlice().ord(), 0x10021);
+        assertEq("á".toSlice().ord(), 0xE1);
+        assertEq("→".toSlice().ord(), 0x2192);
     }
 
     function testCompare() {
-        assertEq(sign("foobie".toSlice().compare("foobie".toSlice())), 0);
-        assertEq(sign("foobie".toSlice().compare("foobie".toSlice())), 0);
+        assertEq("foobie".toSlice().compare("foobie".toSlice()), 0);
+        assertEq("foobie".toSlice().compare("foobie".toSlice()), 0);
         assertEq(sign("foobie".toSlice().compare("foobif".toSlice())), -1);
         assertEq(sign("foobie".toSlice().compare("foobid".toSlice())), 1);
         assertEq(sign("foobie".toSlice().compare("foobies".toSlice())), -1);
         assertEq(sign("foobie".toSlice().compare("foobi".toSlice())), 1);
         assertEq(sign("foobie".toSlice().compare("doobie".toSlice())), 1);
         assertEq(sign("01234567890123456789012345678901".toSlice().compare("012345678901234567890123456789012".toSlice())), -1);
-        assertEq(sign("foo.bar".toSlice().split(".".toSlice()).compare("foo".toSlice())), 0);
+        assertEq("foo.bar".toSlice().split(".".toSlice()).compare("foo".toSlice()), 0);
     }
 
     function testStartsWith() {
