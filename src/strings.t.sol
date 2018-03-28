@@ -15,15 +15,11 @@ contract StringsTest is DSTest {
     }
 
     function sign(int x) private pure returns (int) {
-        return x/abs(x);
+        return x == 0 ? int(0) : (x < 0 ? -1 : int(1));
     }
 
     function assertEq0(string a, string b) internal {
-        if (a.len() != b.len()) {
-            emit log_bytes32("strings differ");
-            emit log_named_string("Expected", a);
-            emit log_named_string("Actual", b);
-        }
+        assertEq0(bytes(a), bytes(b));
     }
 
     function assertEq0(strings.slice memory a, strings.slice memory b) internal {
@@ -46,6 +42,7 @@ contract StringsTest is DSTest {
             test = bytes32((uint(test) / 0x100) | 0x2000000000000000000000000000000000000000000000000000000000000000);
         }
     }
+
 
     function testToSliceB32() public {
         assertEq0(bytes32("foobar").toSliceB32(), "foobar".toSlice());
@@ -98,10 +95,7 @@ contract StringsTest is DSTest {
     }
 
     function testCompare() public {
-        int compare = "foobie".compare("foobie");
-        emit log_named_int("compare", compare);
 
-        assertEq(sign("foobie".toSlice().compare("foobie".toSlice())), 0);
         assertEq(sign("foobie".toSlice().compare("foobie".toSlice())), 0);
         assertEq(sign("foobie".toSlice().compare("foobif".toSlice())), -1);
         assertEq(sign("foobie".toSlice().compare("foobid".toSlice())), 1);
