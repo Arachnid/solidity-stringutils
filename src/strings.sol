@@ -138,12 +138,16 @@ library strings {
      * @return A newly allocated string containing the slice's text.
      */
     function toString(slice self) internal returns (string) {
-        var ret = new string(self._len);
+        string memory ret = new string(self._len);
         uint retptr;
         assembly { retptr := add(ret, 32) }
 
         memcpy(retptr, self._ptr, self._len);
         return ret;
+    }
+
+    function len(string self) internal returns (uint l) {
+        return len(toSlice(self));
     }
 
     /*
@@ -156,8 +160,8 @@ library strings {
      */
     function len(slice self) internal returns (uint l) {
         // Starting at ptr-31 means the LSB will be the byte we care about
-        var ptr = self._ptr - 31;
-        var end = ptr + self._len;
+        uint ptr = self._ptr - 31;
+        uint end = ptr + self._len;
         for (l = 0; ptr < end; l++) {
             uint8 b;
             assembly { b := and(mload(ptr), 0xFF) }
@@ -186,6 +190,18 @@ library strings {
         return self._len == 0;
     }
 
+    function compare(string self, string other) internal returns (int) {
+        return compare(toSlice(self), toSlice(other));
+    }
+
+    function compare(string self, slice other) internal returns (int) {
+        return compare(toSlice(self), other);
+    }
+
+    function compare(slice self, string other) internal returns (int) {
+        return compare(self, toSlice(other));
+    }
+
     /*
      * @dev Returns a positive number if `other` comes lexicographically after
      *      `self`, a negative number if it comes before, or zero if the
@@ -200,8 +216,8 @@ library strings {
         if (other._len < self._len)
             shortest = other._len;
 
-        var selfptr = self._ptr;
-        var otherptr = other._ptr;
+        uint selfptr = self._ptr;
+        uint otherptr = other._ptr;
         for (uint idx = 0; idx < shortest; idx += 32) {
             uint a;
             uint b;
@@ -211,8 +227,8 @@ library strings {
             }
             if (a != b) {
                 // Mask out irrelevant bytes and check again
-                uint mask = ~(2 ** (8 * (32 - shortest + idx)) - 1);
-                var diff = (a & mask) - (b & mask);
+                uint256 mask = ~(2 ** (8 * (32 - shortest + idx)) - 1);
+                uint256 diff = (a & mask) - (b & mask);
                 if (diff != 0)
                     return int(diff);
             }
@@ -247,31 +263,31 @@ library strings {
             return rune;
         }
 
-        uint len;
+        uint l;
         uint b;
         // Load the first byte of the rune into the LSBs of b
         assembly { b := and(mload(sub(mload(add(self, 32)), 31)), 0xFF) }
         if (b < 0x80) {
-            len = 1;
+            l = 1;
         } else if(b < 0xE0) {
-            len = 2;
+            l = 2;
         } else if(b < 0xF0) {
-            len = 3;
+            l = 3;
         } else {
-            len = 4;
+            l = 4;
         }
 
         // Check for truncated codepoints
-        if (len > self._len) {
+        if (l > self._len) {
             rune._len = self._len;
             self._ptr += self._len;
             self._len = 0;
             return rune;
         }
 
-        self._ptr += len;
-        self._len -= len;
-        rune._len = len;
+        self._ptr += l;
+        self._len -= l;
+        rune._len = l;
         return rune;
     }
 
@@ -301,7 +317,7 @@ library strings {
 
         // Load the rune into the MSBs of b
         assembly { word:= mload(mload(add(self, 32))) }
-        var b = word / divisor;
+        uint b = word / divisor;
         if (b < 0x80) {
             ret = b;
             length = 1;
@@ -411,7 +427,7 @@ library strings {
             return false;
         }
 
-        var selfptr = self._ptr + self._len - needle._len;
+        uint selfptr = self._ptr + self._len - needle._len;
 
         if (selfptr == needle._ptr) {
             return true;
@@ -439,7 +455,7 @@ library strings {
             return self;
         }
 
-        var selfptr = self._ptr + self._len - needle._len;
+        uint selfptr = self._ptr + self._len - needle._len;
         bool equal = true;
         if (selfptr != needle._ptr) {
             assembly {
@@ -669,7 +685,7 @@ library strings {
      * @return The concatenation of the two strings.
      */
     function concat(slice self, slice other) internal returns (string) {
-        var ret = new string(self._len + other._len);
+        string memory ret = new string(self._len + other._len);
         uint retptr;
         assembly { retptr := add(ret, 32) }
         memcpy(retptr, self._ptr, self._len);
@@ -693,7 +709,7 @@ library strings {
         for(uint i = 0; i < parts.length; i++)
             length += parts[i]._len;
 
-        var ret = new string(length);
+        string memory ret = new string(length);
         uint retptr;
         assembly { retptr := add(ret, 32) }
 
