@@ -6,7 +6,6 @@ import './strings.sol';
 contract StringsTest is DSTest {
 	using strings for *;
 
-    event log_named_string(bytes32 key, string value);
 
     function abs(int x) private pure returns (int) {
         if(x < 0)
