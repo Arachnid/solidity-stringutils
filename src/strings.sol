@@ -107,7 +107,7 @@ library strings {
 
     /*
      * @dev Returns a slice containing the entire bytes32, interpreted as a
-     *      null-termintaed utf-8 string.
+     *      null-terminated utf-8 string.
      * @param self The bytes32 value to convert to a slice.
      * @return A new slice containing the value of the input argument up to the
      *         first null.
