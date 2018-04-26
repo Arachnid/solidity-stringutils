@@ -33,7 +33,7 @@
  *      `s.splitNew('.')` leaves s unmodified, and returns two values
  *      corresponding to the left and right parts of the string.
  */
- 
+
 pragma solidity ^0.4.14;
 
 library strings {
@@ -211,7 +211,10 @@ library strings {
             }
             if (a != b) {
                 // Mask out irrelevant bytes and check again
-                uint256 mask = ~(2 ** (8 * (32 - shortest + idx)) - 1);
+                uint256 mask = uint256(-1); // 0xffff...
+                if(shortest < 32) {
+                  mask = ~(2 ** (8 * (32 - shortest + idx)) - 1);
+                }
                 uint256 diff = (a & mask) - (b & mask);
                 if (diff != 0)
                     return int(diff);
@@ -476,7 +479,7 @@ library strings {
                 assembly { ptrdata := and(mload(ptr), mask) }
 
                 while (ptrdata != needledata) {
-                    if (ptr >= end) 
+                    if (ptr >= end)
                         return selfptr + selflen;
                     ptr++;
                     assembly { ptrdata := and(mload(ptr), mask) }
@@ -516,7 +519,7 @@ library strings {
                 assembly { ptrdata := and(mload(ptr), mask) }
 
                 while (ptrdata != needledata) {
-                    if (ptr <= selfptr) 
+                    if (ptr <= selfptr)
                         return selfptr;
                     ptr--;
                     assembly { ptrdata := and(mload(ptr), mask) }
