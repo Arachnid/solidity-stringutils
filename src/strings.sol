@@ -391,7 +391,7 @@ library strings {
                 let length := mload(needle)
                 let selfptr := mload(add(self, 0x20))
                 let needleptr := mload(add(needle, 0x20))
-                equal := eq(sha3(selfptr, length), sha3(needleptr, length))
+                equal := eq(keccak256(selfptr, length), keccak256(needleptr, length))
             }
         }
 
@@ -488,11 +488,11 @@ library strings {
             } else {
                 // For long needles, use hashing
                 bytes32 hash;
-                assembly { hash := sha3(needleptr, needlelen) }
+                assembly { hash := keccak256(needleptr, needlelen) }
 
                 for (idx = 0; idx <= selflen - needlelen; idx++) {
                     bytes32 testHash;
-                    assembly { testHash := sha3(ptr, needlelen) }
+                    assembly { testHash := keccak256(ptr, needlelen) }
                     if (hash == testHash)
                         return ptr;
                     ptr += 1;
@@ -528,11 +528,11 @@ library strings {
             } else {
                 // For long needles, use hashing
                 bytes32 hash;
-                assembly { hash := sha3(needleptr, needlelen) }
+                assembly { hash := keccak256(needleptr, needlelen) }
                 ptr = selfptr + (selflen - needlelen);
                 while (ptr >= selfptr) {
                     bytes32 testHash;
-                    assembly { testHash := sha3(ptr, needlelen) }
+                    assembly { testHash := keccak256(ptr, needlelen) }
                     if (hash == testHash)
                         return ptr + needlelen;
                     ptr -= 1;
