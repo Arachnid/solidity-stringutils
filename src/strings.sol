@@ -459,8 +459,6 @@ library strings {
         return self;
     }
 
-    event log_bytemask(bytes32 mask);
-
     // Returns the memory address of the first byte of the first occurrence of
     // `needle` in `self`, or the first byte after `self` if not found.
     function findPtr(uint selflen, uint selfptr, uint needlelen, uint needleptr) private pure returns (uint) {
