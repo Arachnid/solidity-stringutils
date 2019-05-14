@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.5.0;
 
 import 'ds-test/test.sol';
 import './strings.sol';
@@ -17,7 +17,7 @@ contract StringsTest is DSTest {
         return x == 0 ? int(0) : (x < 0 ? -1 : int(1));
     }
 
-    function assertEq0(string a, string b) internal {
+    function assertEq0(string memory a, string memory b) internal {
         assertEq0(bytes(a), bytes(b));
     }
 
@@ -25,7 +25,7 @@ contract StringsTest is DSTest {
     	assertEq0(a.toString(), b.toString());
     }
 
-    function assertEq0(strings.slice memory a, string b) internal {
+    function assertEq0(strings.slice memory a, string memory b) internal {
         assertEq0(a.toString(), b);
     }
 
