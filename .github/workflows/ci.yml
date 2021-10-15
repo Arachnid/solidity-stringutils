@@ -1,6 +1,5 @@
-name: "Test"
+name: "CI"
 on:
-  pull_request:
   push:
 jobs:
   tests:
@@ -10,5 +9,9 @@ jobs:
     - uses: cachix/install-nix-action@v13
       with:
         nix_path: nixpkgs=channel:nixos-unstable
-    - run: nix-env -iA dapp -f $(curl -sS https://api.github.com/repos/dapphub/dapptools/releases/latest | jq -r .tarball_url)
-    - run: make test
+    - name: Install dapp
+      run: nix-env -iA dapp -f $(curl -sS https://api.github.com/repos/dapphub/dapptools/releases/latest | jq -r .tarball_url)
+    - name: Fetch submodules
+      run: git submodule update --init
+    - name: Run tests
+      run: make test
