@@ -53,7 +53,10 @@ library strings {
         }
 
         // Copy remaining bytes
-        uint mask = 256 ** (32 - len) - 1;
+        uint mask = type(uint256).max;
+        if (len > 0) {
+            mask = 256 ** (32 - len) - 1;
+        }
         assembly {
             let srcpart := and(mload(src), not(mask))
             let destpart := and(mload(dest), mask)
@@ -469,7 +472,10 @@ library strings {
 
         if (needlelen <= selflen) {
             if (needlelen <= 32) {
-                bytes32 mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                bytes32 mask;
+                if (needlelen > 0) {
+                    mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                }
 
                 bytes32 needledata;
                 assembly { needledata := and(mload(needleptr), mask) }
@@ -509,7 +515,10 @@ library strings {
 
         if (needlelen <= selflen) {
             if (needlelen <= 32) {
-                bytes32 mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                bytes32 mask;
+                if (needlelen > 0) {
+                    mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                }
 
                 bytes32 needledata;
                 assembly { needledata := and(mload(needleptr), mask) }
