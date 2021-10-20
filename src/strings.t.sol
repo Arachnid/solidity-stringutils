@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.8.0;
 
 import 'ds-test/test.sol';
 import './strings.sol';
@@ -17,7 +17,7 @@ contract StringsTest is DSTest {
         return x == 0 ? int(0) : (x < 0 ? -1 : int(1));
     }
 
-    function assertEq0(string a, string b) internal {
+    function assertEq0(string memory a, string memory b) internal {
         assertEq0(bytes(a), bytes(b));
     }
 
@@ -25,7 +25,7 @@ contract StringsTest is DSTest {
     	assertEq0(a.toString(), b.toString());
     }
 
-    function assertEq0(strings.slice memory a, string b) internal {
+    function assertEq0(strings.slice memory a, string memory b) internal {
         assertEq0(a.toString(), b);
     }
 
@@ -58,8 +58,8 @@ contract StringsTest is DSTest {
     function testLen() public {
         assertEq("".toSlice().len(), 0);
         assertEq("Hello, world!".toSlice().len(), 13);
-        assertEq("naïve".toSlice().len(), 5);
-        assertEq("こんにちは".toSlice().len(), 5);
+        assertEq(unicode"naïve".toSlice().len(), 5);
+        assertEq(unicode"こんにちは".toSlice().len(), 5);
     }
 
     function testEmpty() public {
@@ -74,23 +74,23 @@ contract StringsTest is DSTest {
     }
 
     function testNextRune() public {
-        strings.slice memory s = "a¡ࠀ𐀡".toSlice();
+        strings.slice memory s = unicode"a¡ࠀ𐀡".toSlice();
         assertEq0(s.nextRune(), "a");
-        assertEq0(s, "¡ࠀ𐀡");
-        assertEq0(s.nextRune(), "¡");
-        assertEq0(s, "ࠀ𐀡");
-        assertEq0(s.nextRune(), "ࠀ");
-        assertEq0(s, "𐀡");
-        assertEq0(s.nextRune(), "𐀡");
+        assertEq0(s, unicode"¡ࠀ𐀡");
+        assertEq0(s.nextRune(), unicode"¡");
+        assertEq0(s, unicode"ࠀ𐀡");
+        assertEq0(s.nextRune(), unicode"ࠀ");
+        assertEq0(s, unicode"𐀡");
+        assertEq0(s.nextRune(), unicode"𐀡");
         assertEq0(s, "");
         assertEq0(s.nextRune(), "");
     }
 
     function testOrd() public {
         assertEq("a".toSlice().ord(), 0x61);
-        assertEq("¡".toSlice().ord(), 0xA1);
-        assertEq("ࠀ".toSlice().ord(), 0x800);
-        assertEq("𐀡".toSlice().ord(), 0x10021);
+        assertEq(unicode"¡".toSlice().ord(), 0xA1);
+        assertEq(unicode"ࠀ".toSlice().ord(), 0x800);
+        assertEq(unicode"𐀡".toSlice().ord(), 0x10021);
     }
 
     function testCompare() public {
