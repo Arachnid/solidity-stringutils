@@ -44,7 +44,7 @@ library strings {
 
     function memcpy(uint dest, uint src, uint len) private pure {
         // Copy word-length chunks while possible
-        for(; len >= 32; len -= 32) {
+        for(; len > 32; len -= 32) {
             assembly {
                 mstore(dest, mload(src))
             }
