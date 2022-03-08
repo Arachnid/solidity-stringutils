@@ -34,7 +34,7 @@
  *      corresponding to the left and right parts of the string.
  */
 
-pragma solidity ^0.4.14;
+pragma solidity ^0.8.0;
 
 library strings {
     struct slice {
@@ -53,7 +53,10 @@ library strings {
         }
 
         // Copy remaining bytes
-        uint mask = 256 ** (32 - len) - 1;
+        uint mask = type(uint).max;
+        if (len > 0) {
+            mask = 256 ** (32 - len) - 1;
+        }
         assembly {
             let srcpart := and(mload(src), not(mask))
             let destpart := and(mload(dest), mask)
@@ -83,23 +86,23 @@ library strings {
         uint ret;
         if (self == 0)
             return 0;
-        if (self & 0xffffffffffffffffffffffffffffffff == 0) {
+        if (uint(self) & type(uint128).max == 0) {
             ret += 16;
             self = bytes32(uint(self) / 0x100000000000000000000000000000000);
         }
-        if (self & 0xffffffffffffffff == 0) {
+        if (uint(self) & type(uint64).max == 0) {
             ret += 8;
             self = bytes32(uint(self) / 0x10000000000000000);
         }
-        if (self & 0xffffffff == 0) {
+        if (uint(self) & type(uint32).max == 0) {
             ret += 4;
             self = bytes32(uint(self) / 0x100000000);
         }
-        if (self & 0xffff == 0) {
+        if (uint(self) & type(uint16).max == 0) {
             ret += 2;
             self = bytes32(uint(self) / 0x10000);
         }
-        if (self & 0xff == 0) {
+        if (uint(self) & type(uint8).max == 0) {
             ret += 1;
         }
         return 32 - ret;
@@ -211,13 +214,15 @@ library strings {
             }
             if (a != b) {
                 // Mask out irrelevant bytes and check again
-                uint256 mask = uint256(-1); // 0xffff...
+                uint mask = type(uint).max; // 0xffff...
                 if(shortest < 32) {
                   mask = ~(2 ** (8 * (32 - shortest + idx)) - 1);
                 }
-                uint256 diff = (a & mask) - (b & mask);
-                if (diff != 0)
-                    return int(diff);
+                unchecked {
+                    uint diff = (a & mask) - (b & mask);
+                    if (diff != 0)
+                        return int(diff);
+                }
             }
             selfptr += 32;
             otherptr += 32;
@@ -467,7 +472,10 @@ library strings {
 
         if (needlelen <= selflen) {
             if (needlelen <= 32) {
-                bytes32 mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                bytes32 mask;
+                if (needlelen > 0) {
+                    mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                }
 
                 bytes32 needledata;
                 assembly { needledata := and(mload(needleptr), mask) }
@@ -507,7 +515,10 @@ library strings {
 
         if (needlelen <= selflen) {
             if (needlelen <= 32) {
-                bytes32 mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                bytes32 mask;
+                if (needlelen > 0) {
+                    mask = bytes32(~(2 ** (8 * (32 - needlelen)) - 1));
+                }
 
                 bytes32 needledata;
                 assembly { needledata := and(mload(needleptr), mask) }
@@ -702,7 +713,7 @@ library strings {
         uint retptr;
         assembly { retptr := add(ret, 32) }
 
-        for(i = 0; i < parts.length; i++) {
+        for(uint i = 0; i < parts.length; i++) {
             memcpy(retptr, parts[i]._ptr, parts[i]._len);
             retptr += parts[i]._len;
             if (i < parts.length - 1) {
